@@ -1,0 +1,32 @@
+image:
+  repository: apache/kvrocks
+  tag: "2.14.0"
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 6666
+
+persistence:
+  enabled: true
+  size: 5Gi
+  storageClassName: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+kvrocks:
+  bind: "0.0.0.0"
+  port: 6666
+  dir: "/var/lib/kvrocks"
+  logLevel: "info"

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kvrocks-standalone.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kvrocks-standalone.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: kvrocks
+      port: {{ .Values.service.port }}
+      targetPort: kvrocks
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: {{ include "kvrocks-standalone.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
