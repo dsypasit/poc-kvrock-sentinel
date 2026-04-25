@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kvrocks-standalone.fullname" . }}-master-config
+data:
+  kvrocks.conf: |
+    bind {{ .Values.kvrocks.bind }}
+    port {{ .Values.kvrocks.port }}
+    dir {{ .Values.kvrocks.dir }}
+    log-level {{ .Values.kvrocks.logLevel }}

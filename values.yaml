@@ -1,16 +1,25 @@
+mode: sentinel
+# standalone | replication | sentinel
+
 image:
   repository: apache/kvrocks
   tag: "2.14.0"
   pullPolicy: IfNotPresent
 
-nameOverride: ""
-fullnameOverride: ""
-
-replicaCount: 1
+sentinelImage:
+  repository: redis
+  tag: "7.2-alpine"
+  pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 6666
+
+kvrocks:
+  bind: "0.0.0.0"
+  port: 6666
+  dir: "/var/lib/kvrocks"
+  logLevel: "info"
 
 persistence:
   enabled: true
@@ -25,8 +34,14 @@ resources:
     cpu: 500m
     memory: 512Mi
 
-kvrocks:
-  bind: "0.0.0.0"
-  port: 6666
-  dir: "/var/lib/kvrocks"
-  logLevel: "info"
+replication:
+  replicaCount: 2
+
+sentinel:
+  replicaCount: 3
+  port: 26379
+  masterName: mymaster
+  quorum: 2
+  downAfterMilliseconds: 5000
+  failoverTimeout: 10000
+  parallelSyncs: 1

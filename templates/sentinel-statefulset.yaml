@@ -1,0 +1,59 @@
+{{- if eq .Values.mode "sentinel" }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "kvrocks-standalone.fullname" . }}-sentinel
+  labels:
+    app.kubernetes.io/name: {{ include "kvrocks-standalone.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/role: sentinel
+spec:
+  serviceName: {{ include "kvrocks-standalone.fullname" . }}-sentinel
+  replicas: {{ .Values.sentinel.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kvrocks-standalone.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/role: sentinel
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kvrocks-standalone.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/role: sentinel
+    spec:
+      initContainers:
+        - name: copy-sentinel-config
+          image: "{{ .Values.sentinelImage.repository }}:{{ .Values.sentinelImage.tag }}"
+          command:
+            - sh
+            - -c
+            - cp /config/sentinel.conf /data/sentinel.conf
+          volumeMounts:
+            - name: sentinel-config
+              mountPath: /config
+            - name: sentinel-data
+              mountPath: /data
+      containers:
+        - name: sentinel
+          image: "{{ .Values.sentinelImage.repository }}:{{ .Values.sentinelImage.tag }}"
+          imagePullPolicy: {{ .Values.sentinelImage.pullPolicy }}
+          command:
+            - redis-server
+          args:
+            - /data/sentinel.conf
+            - --sentinel
+          ports:
+            - name: sentinel
+              containerPort: {{ .Values.sentinel.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: sentinel-data
+              mountPath: /data
+      volumes:
+        - name: sentinel-config
+          configMap:
+            name: {{ include "kvrocks-standalone.fullname" . }}-sentinel-config
+        - name: sentinel-data
+          emptyDir: {}
+{{- end }}

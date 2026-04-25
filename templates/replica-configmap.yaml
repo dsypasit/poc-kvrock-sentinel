@@ -1,0 +1,13 @@
+{{- if or (eq .Values.mode "replication") (eq .Values.mode "sentinel") }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kvrocks-standalone.fullname" . }}-replica-config
+data:
+  kvrocks.conf: |
+    bind {{ .Values.kvrocks.bind }}
+    port {{ .Values.kvrocks.port }}
+    dir {{ .Values.kvrocks.dir }}
+    log-level {{ .Values.kvrocks.logLevel }}
+    slaveof {{ include "kvrocks-standalone.fullname" . }}-master {{ .Values.kvrocks.port }}
+{{- end }}

@@ -1,0 +1,21 @@
+{{- if eq .Values.mode "sentinel" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kvrocks-standalone.fullname" . }}-sentinel
+  labels:
+    app.kubernetes.io/name: {{ include "kvrocks-standalone.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/role: sentinel
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: sentinel
+      port: {{ .Values.sentinel.port }}
+      targetPort: sentinel
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: {{ include "kvrocks-standalone.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/role: sentinel
+{{- end }}
