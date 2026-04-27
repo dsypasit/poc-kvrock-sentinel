@@ -1,3 +1,4 @@
+{{- if or (eq .Values.mode "replication") (eq .Values.mode "sentinel") }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,3 +14,4 @@ spec:
     app.kubernetes.io/name: {{ include "kvrocks-standalone.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/role: master
+{{- end }}

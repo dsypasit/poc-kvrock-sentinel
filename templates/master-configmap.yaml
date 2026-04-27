@@ -1,3 +1,4 @@
+{{- if or (eq .Values.mode "replication") (eq .Values.mode "sentinel") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,3 +9,4 @@ data:
     port {{ .Values.kvrocks.port }}
     dir {{ .Values.kvrocks.dir }}
     log-level {{ .Values.kvrocks.logLevel }}
+{{- end }}

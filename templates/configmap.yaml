@@ -1,3 +1,4 @@
+{{- if eq .Values.mode "standalone" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,3 +12,4 @@ data:
     port {{ .Values.kvrocks.port }}
     dir {{ .Values.kvrocks.dir }}
     log-level {{ .Values.kvrocks.logLevel }}
+{{- end }}
