@@ -1,6 +1,8 @@
 mode: sentinel
 # standalone | replication | sentinel
 
+replicaCount: 1
+
 image:
   repository: apache/kvrocks
   tag: "2.14.0"
